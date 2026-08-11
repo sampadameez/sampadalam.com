@@ -1,275 +1,861 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sampad Alam</title>
+  <title>Sampad Alam — Builder. Thinker. Explorer.</title>
+  <meta name="description" content="Sampad Alam — Technology leader, founder, and builder. From Calcutta to Charlotte to Canada." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0a0a0f;
-      --surface:   #13131a;
-      --border:    rgba(255,255,255,0.07);
-      --accent:    #6c63ff;
-      --accent2:   #a78bfa;
-      --text:      #e8e8f0;
-      --muted:     #8888a0;
-      --radius:    1.5rem;
-      --glow:      0 0 80px rgba(108, 99, 255, 0.25);
+      --bg:       #07070e;
+      --s1:       #0d0d18;
+      --s2:       #111120;
+      --border:   rgba(255,255,255,0.07);
+      --accent:   #7c6fff;
+      --accent2:  #a78bfa;
+      --gold:     #c9a84c;
+      --text:     #ddddf0;
+      --muted:    #7878a0;
+      --radius:   1.25rem;
+      --max:      1100px;
     }
 
-    html, body {
-      height: 100%;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background-color: var(--bg);
+      font-family: "Inter", system-ui, sans-serif;
+      background: var(--bg);
       color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(7,7,14,0.85);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav-logo {
+      font-family: "Playfair Display", serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    #hero {
+      position: relative;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
       overflow: hidden;
     }
 
-    /* ── animated gradient mesh background ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
+    #hero::before {
+      content: "";
+      position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(108,99,255,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 80% 90%,  rgba(167,139,250,0.14) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 70% at 60% 50%,  rgba(99,179,237,0.06) 0%, transparent 70%);
-      animation: meshShift 14s ease-in-out infinite alternate;
-      pointer-events: none;
-      z-index: 0;
+        radial-gradient(ellipse 70% 60% at 15% 20%,  rgba(124,111,255,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 55% 50% at 85% 75%,  rgba(167,139,250,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 50% 50%,  rgba(201,168,76,0.05) 0%, transparent 70%);
+      animation: meshDrift 16s ease-in-out infinite alternate;
     }
 
-    @keyframes meshShift {
-      from { opacity: 0.7; transform: scale(1)   rotate(0deg); }
-      to   { opacity: 1;   transform: scale(1.08) rotate(3deg); }
+    @keyframes meshDrift {
+      from { transform: scale(1) rotate(0deg); opacity: .8; }
+      to   { transform: scale(1.1) rotate(4deg); opacity: 1; }
     }
 
-    /* ── card ── */
-    .card {
+    .hero-inner {
       position: relative;
       z-index: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 3rem 3.5rem;
-      max-width: 480px;
-      width: calc(100% - 2rem);
-      text-align: center;
-      box-shadow: var(--glow), 0 24px 64px rgba(0,0,0,0.55);
-      backdrop-filter: blur(12px);
-      animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* subtle shimmer on the card border */
-    .card::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: calc(var(--radius) + 1px);
-      background: linear-gradient(135deg, rgba(108,99,255,0.5), transparent 50%, rgba(167,139,250,0.3));
-      z-index: -1;
-      opacity: 0.6;
-    }
-
-    /* ── avatar ── */
-    .avatar-wrap {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 1.75rem;
-    }
-
-    .avatar-ring {
-      position: absolute;
-      inset: -5px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2), #63b3ed);
-      z-index: -1;
-      animation: spin 6s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* blurred copy to create a glow ring effect */
-    .avatar-ring::after {
-      content: '';
-      position: absolute;
-      inset: 3px;
-      border-radius: 50%;
-      background: var(--surface);
-    }
-
-    .avatar {
-      display: block;
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      object-fit: cover;
-      position: relative;
-      z-index: 1;
-      background: var(--bg); /* shown when no image loads */
-    }
-
-    /* placeholder icon when no real photo is present */
-    .avatar-placeholder {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 1;
+      gap: 5rem;
+      max-width: var(--max);
+      width: calc(100% - 4rem);
+      margin: 0 auto;
+      padding: 8rem 0 6rem;
     }
 
-    .avatar-placeholder svg {
-      width: 56px;
-      height: 56px;
-      opacity: 0.45;
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      font-weight: 500;
+      margin-bottom: 1.25rem;
     }
 
-    /* ── name + tagline ── */
-    .name {
-      font-size: 1.75rem;
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      background: linear-gradient(100deg, #fff 30%, var(--accent2));
+    .hero-eyebrow::before {
+      content: "";
+      display: block;
+      width: 28px; height: 1px;
+      background: var(--accent2);
+    }
+
+    h1.hero-name {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(140deg, #fff 40%, var(--accent2) 80%, var(--gold));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 0.4rem;
     }
 
-    .tagline {
-      font-size: 0.85rem;
-      font-weight: 400;
+    .hero-tagline {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: rgba(221,221,240,0.7);
+      max-width: 420px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .tag {
+      padding: 0.35rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.78rem;
       color: var(--muted);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.04em;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .hero-photo { display: flex; justify-content: center; }
+
+    .photo-frame {
+      position: relative;
+      width: 340px;
+      height: 340px;
+    }
+
+    .photo-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--accent), var(--accent2), var(--gold), var(--accent));
+      animation: ringRotate 7s linear infinite;
+      z-index: 0;
+    }
+
+    .photo-ring::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: var(--bg);
+    }
+
+    @keyframes ringRotate { to { transform: rotate(360deg); } }
+
+    .hero-img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .badge {
+      position: absolute;
+      z-index: 2;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      animation: floatBadge 3s ease-in-out infinite alternate;
+    }
+
+    .badge:nth-child(3) { top: 8%;  left: -18%; animation-delay: 0s; }
+    .badge:nth-child(4) { bottom: 12%; right: -16%; animation-delay: 1.5s; }
+
+    @keyframes floatBadge {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-8px); }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
+      animation: bounceScroll 2s ease-in-out infinite;
+    }
+
+    .scroll-hint svg { opacity: 0.5; }
+
+    @keyframes bounceScroll {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    section { padding: 7rem 2rem; }
+    section:nth-child(even) { background: var(--s1); }
+
+    .section-inner { max-width: var(--max); margin: 0 auto; }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-label::before {
+      content: "";
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--accent2);
+    }
+
+    h2.section-title {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
       margin-bottom: 1.5rem;
     }
 
-    /* ── divider ── */
-    .divider {
-      width: 40px;
-      height: 2px;
-      margin: 0 auto 1.5rem;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      border-radius: 2px;
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
     }
 
-    /* ── bio text ── */
-    .bio {
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    #story .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .story-photo-wrap { position: relative; }
+
+    .story-photo {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: top;
+      border-radius: var(--radius);
+      filter: grayscale(20%);
+    }
+
+    .story-photo-wrap::before {
+      content: "";
+      position: absolute;
+      top: -16px; left: -16px;
+      width: 60%; height: 60%;
+      border-top: 2px solid var(--accent);
+      border-left: 2px solid var(--accent);
+      border-radius: 4px 0 0 0;
+      opacity: 0.4;
+    }
+
+    .story-photo-wrap::after {
+      content: "";
+      position: absolute;
+      bottom: -16px; right: -16px;
+      width: 60%; height: 60%;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+      border-radius: 0 0 4px 0;
+      opacity: 0.4;
+    }
+
+    .story-text h2 { margin-bottom: 1.5rem; }
+
+    .story-text p {
       font-size: 1.05rem;
       font-weight: 300;
-      line-height: 1.75;
-      color: rgba(232,232,240,0.85);
-      margin-bottom: 2rem;
+      line-height: 1.85;
+      color: rgba(221,221,240,0.78);
+      margin-bottom: 1.25rem;
     }
 
-    /* ── LinkedIn CTA ── */
-    .cta {
-      display: inline-flex;
+    .story-text p em {
+      font-family: "Playfair Display", serif;
+      font-style: italic;
+      color: var(--text);
+      font-size: 1.1em;
+    }
+
+    #journey { position: relative; }
+
+    .timeline {
+      position: relative;
+      margin-top: 4rem;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--accent) 15%, var(--accent2) 85%, transparent);
+    }
+
+    .tl-item {
+      position: relative;
+      padding: 0 0 3.5rem 3rem;
+    }
+
+    .tl-item:last-child { padding-bottom: 0; }
+
+    .tl-dot {
+      position: absolute;
+      left: -8px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(124,111,255,0.5);
+    }
+
+    .tl-period {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      font-weight: 500;
+      margin-bottom: 0.35rem;
+    }
+
+    .tl-title {
+      font-family: "Playfair Display", serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .tl-flag { font-size: 1.3rem; margin-right: 0.4rem; }
+
+    .tl-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: rgba(221,221,240,0.7);
+      line-height: 1.75;
+      max-width: 620px;
+    }
+
+    #impact .impact-intro {
+      max-width: 580px;
+      margin-bottom: 3.5rem;
+    }
+
+    .impact-intro p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(221,221,240,0.7);
+      line-height: 1.8;
+    }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .impact-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.25rem 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .impact-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    }
+
+    .impact-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    .impact-stat {
+      font-family: "Playfair Display", serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #fff, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .impact-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .impact-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    #beyond .beyond-header {
+      max-width: 600px;
+      margin-bottom: 3.5rem;
+    }
+
+    .beyond-header p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(221,221,240,0.7);
+      line-height: 1.8;
+    }
+
+    .beyond-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    .beyond-card {
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .beyond-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124,111,255,0.3);
+    }
+
+    .beyond-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+    .beyond-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+
+    .beyond-card p {
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    #causes { background: var(--s1); }
+
+    #causes .section-inner > p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(221,221,240,0.7);
+      line-height: 1.8;
+      max-width: 580px;
+      margin-bottom: 3rem;
+    }
+
+    .causes-list { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+
+    .cause-pill {
+      display: flex;
       align-items: center;
       gap: 0.55rem;
-      padding: 0.7rem 1.6rem;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid var(--border);
       border-radius: 50px;
-      background: linear-gradient(135deg, var(--accent), #7c74ff);
-      color: #fff;
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-decoration: none;
-      letter-spacing: 0.02em;
-      box-shadow: 0 4px 24px rgba(108,99,255,0.45);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+      font-size: 0.85rem;
+      color: rgba(221,221,240,0.8);
+      background: rgba(255,255,255,0.03);
+      transition: border-color 0.25s, color 0.25s;
     }
 
-    .cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(108,99,255,0.6);
+    .cause-pill:hover { border-color: rgba(167,139,250,0.4); color: var(--text); }
+    .cause-pill span { font-size: 1.1rem; }
+
+    #connect {
+      text-align: center;
+      padding: 8rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #connect::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(124,111,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    #connect .section-inner { position: relative; z-index: 1; }
+
+    #connect h2 {
+      font-family: "Playfair Display", serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+    }
+
+    #connect p {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: rgba(221,221,240,0.65);
+      max-width: 440px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.75;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--accent), #9d95ff);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      box-shadow: 0 4px 28px rgba(124,111,255,0.45);
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 40px rgba(124,111,255,0.6);
       opacity: 0.92;
     }
 
-    .cta svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
+    .cta-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(120,120,160,0.5);
+      letter-spacing: 0.06em;
     }
 
-    /* ── footer note ── */
-    .footer {
-      margin-top: 2rem;
-      font-size: 0.75rem;
-      color: rgba(136,136,160,0.5);
-      letter-spacing: 0.04em;
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 3rem; padding: 7rem 0 5rem; }
+      .hero-text { order: 2; }
+      .hero-photo { order: 1; }
+      .hero-eyebrow { justify-content: center; }
+      .hero-tags { justify-content: center; }
+      .hero-tagline { margin: 0 auto 2.5rem; }
+      .photo-frame { width: 240px; height: 240px; }
+      #story .story-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .story-photo { aspect-ratio: 4/3; }
+      .impact-grid { grid-template-columns: 1fr; }
+      .beyond-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
     }
+
+    @media (max-width: 540px) { .beyond-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-  <main class="card" role="main">
+  <nav id="nav">
+    <a class="nav-logo" href="#hero">Sampad Alam</a>
+    <ul class="nav-links">
+      <li><a href="#story">Story</a></li>
+      <li><a href="#journey">Journey</a></li>
+      <li><a href="#impact">Impact</a></li>
+      <li><a href="#beyond">Beyond</a></li>
+      <li><a href="#connect">Connect</a></li>
+    </ul>
+  </nav>
 
-    <!-- Avatar -->
-    <div class="avatar-wrap">
-      <div class="avatar-ring" aria-hidden="true"></div>
-      <img class="avatar" src="photo.JPG" alt="Sampad Alam" />
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow">Builder &middot; Thinker &middot; Explorer</div>
+        <h1 class="hero-name">Sampad<br/>Alam</h1>
+        <p class="hero-tagline">
+          Technology leader and founder building products that matter &mdash;
+          from the streets of Calcutta to the boardrooms of Canada.
+        </p>
+        <div class="hero-tags">
+          <span class="tag">Product &amp; Technology</span>
+          <span class="tag">Founder</span>
+          <span class="tag">Consultant</span>
+          <span class="tag">3 Countries</span>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <div class="photo-frame">
+          <div class="photo-ring" aria-hidden="true"></div>
+          <img class="hero-img" src="photo.JPG" alt="Sampad Alam" />
+          <div class="badge">&#127470;&#127475; Calcutta</div>
+          <div class="badge">&#127464;&#127462; Canada</div>
+        </div>
+      </div>
     </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Scroll
+    </div>
+  </section>
 
-    <!-- Name -->
-    <h1 class="name">Sampad Alam</h1>
-    <p class="tagline">Nice to meet you</p>
+  <section id="story">
+    <div class="section-inner">
+      <div class="story-grid">
+        <div class="story-photo-wrap reveal">
+          <img class="story-photo" src="photo.JPG" alt="Sampad Alam" />
+        </div>
+        <div class="story-text reveal">
+          <div class="section-label">The Story</div>
+          <h2 class="section-title">A life shaped by<br/><em>curiosity and courage.</em></h2>
+          <p>I grew up in Calcutta, India &mdash; a city alive with energy, complexity, and ideas. That environment gave me something no classroom could: the ability to navigate uncertainty and find opportunity in chaos.</p>
+          <p>After completing my engineering degree, I spent five years honing my craft in India&rsquo;s technology sector. Then at 27, I made the leap &mdash; packing up everything for Charlotte, North Carolina, in search of a bigger stage.</p>
+          <p>In 2022, the next chapter opened: I moved to Canada as a permanent resident, founded my own company, and began building products on my own terms &mdash; while continuing to consult for organizations navigating digital transformation.</p>
+          <p><em>Three countries. Countless lessons. One consistent north star: build things that work.</em></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <div class="divider" aria-hidden="true"></div>
+  <section id="journey">
+    <div class="section-inner">
+      <div class="reveal">
+        <div class="section-label">The Journey</div>
+        <h2 class="section-title">A map drawn<br/>one move at a time.</h2>
+      </div>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-period">The Beginning</div>
+          <div class="tl-title"><span class="tl-flag">&#127470;&#127475;</span>Calcutta, India</div>
+          <div class="tl-body">Raised in one of India&rsquo;s most culturally rich cities, I grew up surrounded by a love of science, sport, and stories. Engineering at university opened the door to technology &mdash; and I never looked back.</div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-period">First Career Chapter</div>
+          <div class="tl-title"><span class="tl-flag">&#127470;&#127475;</span>India &mdash; Technology Sector</div>
+          <div class="tl-body">Five years of deep technical and delivery work across enterprise projects. I learned how large organizations move &mdash; and how to make them move faster. This is where the foundation was built.</div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-period">The Big Move</div>
+          <div class="tl-title"><span class="tl-flag">&#127482;&#127480;</span>Charlotte, North Carolina</div>
+          <div class="tl-body">Moving to the United States at 27 was equal parts terrifying and thrilling. Charlotte became my home base for years of growth &mdash; leading delivery teams, driving automation, and migrating legacy systems for enterprise clients.</div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2022 &mdash; Present</div>
+          <div class="tl-title"><span class="tl-flag">&#127464;&#127462;</span>Canada &mdash; Founder &amp; Builder</div>
+          <div class="tl-body">Canada brought a new identity: permanent resident, founder, and independent builder. Today I run my own company &mdash; creating products, consulting on transformation, and writing the most exciting chapter yet.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Bio -->
-    <p class="bio">
-      Hello, my name is Sampad.<br />
-      Nice to meet you.<br /><br />
-      If you'd like to connect,<br />
-      please ping me on LinkedIn.
-    </p>
+  <section id="impact">
+    <div class="section-inner">
+      <div class="impact-intro reveal">
+        <div class="section-label">Professional Impact</div>
+        <h2 class="section-title">Numbers that<br/>tell the real story.</h2>
+        <p>Across enterprise delivery, database management, and digital transformation &mdash; the work has always been about measurable change.</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card reveal">
+          <div class="impact-stat" data-target="30">0<span>%</span></div>
+          <div class="impact-label">Delivery Efficiency Improved</div>
+          <div class="impact-desc">Led a team that increased project delivery efficiency by 30% through streamlined integration processes across enterprise programs.</div>
+        </div>
+        <div class="impact-card reveal">
+          <div class="impact-stat" data-target="50">0<span>%</span></div>
+          <div class="impact-label">Faster Database Provisioning</div>
+          <div class="impact-desc">Reduced database provisioning time by half through process automation in enterprise database management projects.</div>
+        </div>
+        <div class="impact-card reveal">
+          <div class="impact-stat" data-target="40">0<span>%</span></div>
+          <div class="impact-label">Collaboration Boost</div>
+          <div class="impact-desc">Migrated legacy platforms like Lotus Notes applications to SharePoint &mdash; resulting in a 40% increase in team collaboration and productivity.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- CTA -->
-    <a
-      class="cta"
-      href="https://www.linkedin.com/in/sampadalam"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Connect with Sampad on LinkedIn"
-    >
-      <!-- LinkedIn icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M20.447 20.452H17.21v-5.569c0-1.328-.024-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.985V9h3.104v1.561h.044c.432-.818 1.487-1.681 3.061-1.681 3.272 0 3.876 2.154 3.876 4.956v6.616zM5.337 7.433a1.8 1.8 0 1 1 0-3.601 1.8 1.8 0 0 1 0 3.601zm1.554 13.019H3.783V9h3.108v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.226.792 24 1.771 24h20.451C23.2 24 24 23.226 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
-      </svg>
-      Connect on LinkedIn
-    </a>
+  <section id="beyond">
+    <div class="section-inner">
+      <div class="beyond-header reveal">
+        <div class="section-label">Beyond Work</div>
+        <h2 class="section-title">The person<br/>behind the work.</h2>
+        <p>A full life isn&rsquo;t built on r&eacute;sum&eacute;s alone. Here&rsquo;s what keeps me grounded and curious outside of technology.</p>
+      </div>
+      <div class="beyond-grid">
+        <div class="beyond-card reveal">
+          <span class="beyond-icon">&#128104;&#8205;&#128103;</span>
+          <h3>Family First</h3>
+          <p>Proud parent, partner, and the owner of two very opinionated pets. Home is the anchor.</p>
+        </div>
+        <div class="beyond-card reveal">
+          <span class="beyond-icon">&#9917;</span>
+          <h3>Football Fan</h3>
+          <p>The beautiful game has been a passion since childhood &mdash; the tactics, the drama, the community.</p>
+        </div>
+        <div class="beyond-card reveal">
+          <span class="beyond-icon">&#128247;</span>
+          <h3>Portrait Photography</h3>
+          <p>I love capturing people in their truest moments. A portrait holds a story no paragraph can.</p>
+        </div>
+        <div class="beyond-card reveal">
+          <span class="beyond-icon">&#127758;</span>
+          <h3>Three Countries</h3>
+          <p>India, USA, Canada &mdash; each place shaped a different version of me. Grateful for all three.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <p class="footer">sampadalam.com</p>
+  <section id="causes">
+    <div class="section-inner">
+      <div class="section-label reveal">What I Stand For</div>
+      <h2 class="section-title reveal">Causes close<br/>to my heart.</h2>
+      <p class="reveal">Technology means little if it doesn&rsquo;t serve people. These are the causes I actively support and advocate for.</p>
+      <div class="causes-list reveal">
+        <div class="cause-pill"><span>&#9994;</span> Civil Rights &amp; Social Action</div>
+        <div class="cause-pill"><span>&#128218;</span> Education</div>
+        <div class="cause-pill"><span>&#128330;&#65039;</span> Human Rights</div>
+        <div class="cause-pill"><span>&#127807;</span> Poverty Alleviation</div>
+        <div class="cause-pill"><span>&#128300;</span> Science &amp; Technology</div>
+      </div>
+    </div>
+  </section>
 
-  </main>
+  <section id="connect">
+    <div class="section-inner reveal">
+      <h2>Let&rsquo;s build<br/><em style="font-family:'Playfair Display',serif;font-style:italic;">something together.</em></h2>
+      <p>Whether you&rsquo;re looking to collaborate, consult, or simply connect &mdash; I&rsquo;d love to hear from you.</p>
+      <a class="cta-btn" href="https://www.linkedin.com/in/sampadalam/" target="_blank" rel="noopener noreferrer" aria-label="Connect with Sampad on LinkedIn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452H17.21v-5.569c0-1.328-.024-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.985V9h3.104v1.561h.044c.432-.818 1.487-1.681 3.061-1.681 3.272 0 3.876 2.154 3.876 4.956v6.616zM5.337 7.433a1.8 1.8 0 1 1 0-3.601 1.8 1.8 0 0 1 0 3.601zm1.554 13.019H3.783V9h3.108v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.226.792 24 1.771 24h20.451C23.2 24 24 23.226 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+        Connect on LinkedIn
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Sampad Alam &nbsp;&middot;&nbsp; sampadalam.com</p>
+  </footer>
+
+  <script>
+    const nav = document.getElementById("nav");
+    window.addEventListener("scroll", () => {
+      nav.classList.toggle("scrolled", window.scrollY > 60);
+    }, { passive: true });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add("visible"); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target, 10);
+      const suffix = el.querySelector("span") ? el.querySelector("span").outerHTML : "";
+      let start = 0;
+      const step = (ts) => {
+        if (!start) start = ts;
+        const p = Math.min((ts - start) / 1400, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.innerHTML = Math.floor(eased * target) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    const statObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); statObs.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    document.querySelectorAll(".impact-stat[data-target]").forEach(el => statObs.observe(el));
+  </script>
 
 </body>
 </html>
