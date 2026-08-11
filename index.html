@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sampad Alam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg:        #0a0a0f;
+      --surface:   #13131a;
+      --border:    rgba(255,255,255,0.07);
+      --accent:    #6c63ff;
+      --accent2:   #a78bfa;
+      --text:      #e8e8f0;
+      --muted:     #8888a0;
+      --radius:    1.5rem;
+      --glow:      0 0 80px rgba(108, 99, 255, 0.25);
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── animated gradient mesh background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%,  rgba(108,99,255,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 90%,  rgba(167,139,250,0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 70% at 60% 50%,  rgba(99,179,237,0.06) 0%, transparent 70%);
+      animation: meshShift 14s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes meshShift {
+      from { opacity: 0.7; transform: scale(1)   rotate(0deg); }
+      to   { opacity: 1;   transform: scale(1.08) rotate(3deg); }
+    }
+
+    /* ── card ── */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3rem 3.5rem;
+      max-width: 480px;
+      width: calc(100% - 2rem);
+      text-align: center;
+      box-shadow: var(--glow), 0 24px 64px rgba(0,0,0,0.55);
+      backdrop-filter: blur(12px);
+      animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* subtle shimmer on the card border */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: calc(var(--radius) + 1px);
+      background: linear-gradient(135deg, rgba(108,99,255,0.5), transparent 50%, rgba(167,139,250,0.3));
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    /* ── avatar ── */
+    .avatar-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1.75rem;
+    }
+
+    .avatar-ring {
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2), #63b3ed);
+      z-index: -1;
+      animation: spin 6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* blurred copy to create a glow ring effect */
+    .avatar-ring::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: var(--surface);
+    }
+
+    .avatar {
+      display: block;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      position: relative;
+      z-index: 1;
+      background: var(--bg); /* shown when no image loads */
+    }
+
+    /* placeholder icon when no real photo is present */
+    .avatar-placeholder {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .avatar-placeholder svg {
+      width: 56px;
+      height: 56px;
+      opacity: 0.45;
+    }
+
+    /* ── name + tagline ── */
+    .name {
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      background: linear-gradient(100deg, #fff 30%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── divider ── */
+    .divider {
+      width: 40px;
+      height: 2px;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+    }
+
+    /* ── bio text ── */
+    .bio {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(232,232,240,0.85);
+      margin-bottom: 2rem;
+    }
+
+    /* ── LinkedIn CTA ── */
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: 50px;
+      background: linear-gradient(135deg, var(--accent), #7c74ff);
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      box-shadow: 0 4px 24px rgba(108,99,255,0.45);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(108,99,255,0.6);
+      opacity: 0.92;
+    }
+
+    .cta svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* ── footer note ── */
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: rgba(136,136,160,0.5);
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card" role="main">
+
+    <!-- Avatar -->
+    <div class="avatar-wrap">
+      <div class="avatar-ring" aria-hidden="true"></div>
+      <!--
+        Replace the placeholder below with your real photo:
+          <img class="avatar" src="photo.jpg" alt="Sampad Alam" />
+        Drop photo.jpg next to index.html, then remove the avatar-placeholder div.
+      -->
+      <img class="avatar" src="photo.jpg" alt="Sampad Alam" />
+    </div>
+
+    <!-- Name -->
+    <h1 class="name">Sampad Alam</h1>
+    <p class="tagline">Nice to meet you</p>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- Bio -->
+    <p class="bio">
+      Hello, my name is Sampad.<br />
+      Nice to meet you.<br /><br />
+      If you'd like to connect,<br />
+      please ping me on LinkedIn.
+    </p>
+
+    <!-- CTA -->
+    <a
+      class="cta"
+      href="https://www.linkedin.com/in/sampadalam"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Connect with Sampad on LinkedIn"
+    >
+      <!-- LinkedIn icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.447 20.452H17.21v-5.569c0-1.328-.024-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.985V9h3.104v1.561h.044c.432-.818 1.487-1.681 3.061-1.681 3.272 0 3.876 2.154 3.876 4.956v6.616zM5.337 7.433a1.8 1.8 0 1 1 0-3.601 1.8 1.8 0 0 1 0 3.601zm1.554 13.019H3.783V9h3.108v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.226.792 24 1.771 24h20.451C23.2 24 24 23.226 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+      </svg>
+      Connect on LinkedIn
+    </a>
+
+    <p class="footer">sampadalam.com</p>
+
+  </main>
+
+</body>
+</html>
